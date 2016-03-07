@@ -23,7 +23,7 @@ module VagrantPlugins
       # OAR queue to use when reserving resources. (default: 'default'; other values: production, besteffort)
       # @return [String]
       attr_accessor :queue
-
+      attr_accessor :nodes
       # Walltime to use when reserving resources. (default: reserve resources until today at 6:55pm)
       # @return [String]
       attr_accessor :walltime
@@ -40,6 +40,7 @@ module VagrantPlugins
         @properties = UNSET_VALUE
         @queue = UNSET_VALUE
         @walltime = UNSET_VALUE
+        @nodes = UNSET_VALUE
       end
 
       def finalize!
@@ -49,6 +50,7 @@ module VagrantPlugins
         @properties = '' if @properties == UNSET_VALUE
         @queue = 'default' if @queue == UNSET_VALUE
         @walltime = nil if @walltime == UNSET_VALUE
+        @nodes = 2 if @nodes == UNSET_VALUE
       end
 
       def validate(machine)
