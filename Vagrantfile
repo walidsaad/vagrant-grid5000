@@ -35,6 +35,7 @@ Vagrant.configure("2") do |config|
     tb.vm.provider 'grid5000' do |g5k|
       g5k.site = 'rennes'
       g5k.walltime = '0:15'
+      g5k.nodes = 2
     end
   end
 
