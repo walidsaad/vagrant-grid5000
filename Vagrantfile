@@ -10,6 +10,9 @@ echo "Monitoring progress of Wendelin installation: execute tail -f /opt/slapos/
 echo "Accessing Wendelin instance: execute erp5-show -s command"
 SCRIPT
 
+$postinstall = <<SCRIPT
+echo "Postinsall scripts"
+SCRIPT
 nodes_config = (JSON.parse(File.read("wendelin-nodes.json")))['nodes']
 
 Vagrant.configure("2") do |config|
@@ -62,4 +65,7 @@ end
 #######Begin provision for all node#########
  config.vm.provision "shell", inline: $install
 #######end provision for all node#########
+#######Begin postinstall scripts for all node#########
+ config.vm.provision "shell", inline: $postinstall
+#######End postinstall scripts for all node#########
 end
