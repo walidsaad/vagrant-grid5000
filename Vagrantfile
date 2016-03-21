@@ -20,7 +20,7 @@ Vagrant.configure("2") do |config|
     # Grid'5000 authentification parameters for Ruby-Cute
     # see http://www.rubydoc.info/github/ruby-cute/ruby-cute/master/Cute%2FG5K%2FAPI%3Ainitialize
     # default: use ~/.grid5000_api.yml
-    g5k.cute_parameters = { :username => 'wsaad', :password => '09072011@walid' }
+    g5k.cute_parameters = { :username => 'login', :password => 'password' }
 
     # Site to reserve on (default: nancy)
     #g5k.site = rennes
