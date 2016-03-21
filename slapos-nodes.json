@@ -1,0 +1,15 @@
+{
+  "nodes": {
+    "slapos_node": {
+      ":node-number": 10,
+      ":site": "lyon",
+      ":env": "slapos-node",
+      ":computerpatition": 20,
+      ":master-url-ipv6": "https://[2001:470:1f14:169:8850:7aff:fe6d:47dc]:10009",
+      ":master-url-web": "https://grid5000master.host.vifib.net/",
+      ":login": "demo",
+      ":password": "demo",
+      ":interface-name": "tapVPN"
+    }
+}
+}
