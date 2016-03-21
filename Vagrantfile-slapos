@@ -1,0 +1,85 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+$confserver = <<SCRIPT
+echo "Start SlapOS Master Config"
+URL=https://grid5000master.host.vifib.net/
+https_proxy=http://proxy:3128 curl -g -k -sL $URL -w %{http_code} --max-time 10 -o /dev/null
+slapos node instance --all
+sleep 200 && https_proxy=http://proxy:3128 curl -g -k -sL $URL -w %{http_code} --max-time 10 -o /dev/null
+echo "End SlapOS Master Config"
+SCRIPT
+
+$registernode = <<SCRIPT
+echo "Start Node Registration"
+machine=`hostname` 
+http_proxy=http://proxy:3128 https_proxy=http://proxy:3128 slapos node register --interface-name tapVPN --master-url https://[2001:470:1f14:169:8850:7aff:fe6d:47dc]:10009 --master-url-web https://grid5000master.host.vifib.net/ --login-auth --partition-number 20 $machine --login demo --password demo
+/usr/sbin/slapos-start
+slapos node format --now
+echo "End Node Registration" 
+SCRIPT
+#nodes_number=3
+nodes_config = (JSON.parse(File.read("slapos-nodes.json")))['nodes']
+master_config = (JSON.parse(File.read("slapos-master.json")))['nodes']
+Vagrant.configure("2") do |config|
+
+  # Global parameters for the Grid'5000 provider
+  config.vm.provider "grid5000" do |g5k|
+
+    # Grid'5000 authentification parameters for Ruby-Cute
+    # see http://www.rubydoc.info/github/ruby-cute/ruby-cute/master/Cute%2FG5K%2FAPI%3Ainitialize
+    # default: use ~/.grid5000_api.yml
+    g5k.cute_parameters = { :username => 'wsaad', :password => '09072011@walid' }
+
+    # Site to reserve on (default: nancy)
+    #g5k.site = rennes
+
+    # OAR queue to use (default: default)
+    #g5k.queue = 'default'
+
+    # OAR properties to use (default: none)
+    #g5k.properties = "cluster='griffon'"
+
+    # Walltime (default: reserve until the next end of day (18:55))
+    #g5k.walltime = '01:00'
+
+    # Environment to deploy (default: jessie-x64-min)
+    #g5k.env = 'jessie-x64-base'
+  end
+####Create Slapos Master####
+master_config.each do |node|
+    node_name   = node[0] # name of node
+    node_parameters = node[1] # content of node
+  config.vm.define node_name do |tb|
+    # All providers need to provide a box. This is a dummy, empty box for the grid5000 provider.
+    tb.vm.box = "dummy"
+    # VM-specific overrides
+    tb.vm.provider 'grid5000' do |g5k|
+      g5k.site = node_parameters[':site']
+      g5k.env = node_parameters[':env']
+      g5k.walltime = '02:00'
+    end
+    tb.vm.provision "shell", privileged: false, inline: $confserver
+  end
+end
+####Create Slapos Nodes####
+nodes_config.each do |node|
+    node_name   = node[0] # name of node
+    node_parameters = node[1] # content of node
+    node_number = node_parameters[':node-number']
+    for i in (1..node_number) do
+       config.vm.define node_name + i.to_s do |tb2|
+       tb2.vm.box = "dummy"
+       # VM-specific overrides
+       tb2.vm.provider 'grid5000' do |g5k|
+       #g5k.site = 'lyon'
+       g5k.site = node_parameters[':site']
+       g5k.env = node_parameters[':env']
+       g5k.walltime = '02:00'
+       end
+       tb2.vm.provision "shell", privileged: false, inline: $registernode
+       # Synced folders configuration, using rsync (you need to install it if you use -min or -base, see below)
+       tb2.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
+    end
+end
+end
+end
