@@ -1,6 +1,6 @@
 {
   "nodes": {
-    "lyon-wendelin-cluster-": {
+    "-wendelin-cluster-1-": {
       ":node-number": 1,
       ":site": "lyon",
       ":env": "jessie-x64-base",
@@ -11,7 +11,7 @@
       ":password": "demo",
       ":interface-name": "lo"
     },
-    "Nancy-wendelin-cluster-": {
+    "-wendelin-cluster-2-": {
       ":node-number": 1,
       ":site": "nancy",
       ":env": "jessie-x64-base",
@@ -22,7 +22,7 @@
       ":password": "demo",
       ":interface-name": "lo"
     },
-   "Grenoble-wendelin-cluster-": {
+   "-wendelin-cluster-3-": {
       ":node-number": 1,
       ":site": "grenoble",
       ":env": "jessie-x64-base",
