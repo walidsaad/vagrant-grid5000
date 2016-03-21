@@ -53,21 +53,13 @@ nodes_config.each do |node|
        g5k.site = node_parameters[':site']
        g5k.env = node_parameters[':env']
        g5k.walltime = '02:00'
-       #g5k.nodes = '2'
        end
-       #tb2.vm.provision "shell" do |s|
-       # s.inline = $install
-       # s.args   = node_name + i.to_s
-       #end
-       #tb2.vm.provision "shell", privileged: false, inline: $install
        # Synced folders configuration, using rsync (you need to install it if you use -min or -base, see below)
        tb2.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
     end
 end
 end
 #######Begin provision for all node#########
-##config.vm.provision "shell", privileged: false, inline: 'apt-get update && apt-get -y install sudo rsync'
-  # privileged: false is no longer required
  config.vm.provision "shell", inline: $install
 #######end provision for all node#########
 end
